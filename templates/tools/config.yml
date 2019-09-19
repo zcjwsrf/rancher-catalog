@@ -1,0 +1,7 @@
+name:  HC Tools
+description: |
+   Jenkins、Registry本地镜像仓库等基础服务
+version:  1.0
+category:  atag
+maintainer:  ATAG
+license:  商业授权

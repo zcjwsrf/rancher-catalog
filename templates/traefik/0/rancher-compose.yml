@@ -1,0 +1,16 @@
+.catalog:
+    name: "Gateway Traefik"
+    version: "1.0"
+    description: "健康城市Traefik网关服务"       
+
+
+traefik:
+  retain_ip: true
+  start_on_create: true
+  health_check:
+    healthy_threshold: 2
+    response_timeout: 5000
+    port: 90
+    unhealthy_threshold: 3
+    interval: 5000
+    strategy: recreate

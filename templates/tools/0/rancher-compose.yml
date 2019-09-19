@@ -1,0 +1,17 @@
+.catalog:
+    name: "tools"
+    version: "1.0"
+    description: "健康城市相关工具"    
+    
+version: '2'
+services:
+  jenkins:
+    retain_ip: true
+    scale: 1
+    start_on_create: true
+  registry:
+    retain_ip: true
+    scale: 1
+    start_on_create: true
+
+

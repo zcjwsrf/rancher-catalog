@@ -1,0 +1,39 @@
+version: '2'
+services:
+  rmqnamesrv:
+    image: registry.cn-hangzhou.aliyuncs.com/atag/rocketmq-namesrv:4.2.0
+    stdin_open: true
+    tty: true
+    ports:
+    - 9876:9876/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: ${HOST_LABEL}
+  rmqbroker:
+    image: registry.cn-hangzhou.aliyuncs.com/atag/rocketmq-broker:4.2.0
+    stdin_open: true
+    volumes:
+    - /hc/data/rocketmq/store:/opt/store
+    - /hc/data/rocketmq/logs:/opt/logs
+    tty: true
+    links:
+    - rmqnamesrv:rmqnamesrv
+    ports:
+    - 10909:10909/tcp
+    - 10911:10911/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: ${HOST_LABEL}
+  rocketmq-console-ng:
+    image: styletang/rocketmq-console-ng
+    environment:
+      JAVA_OPTS: -Drocketmq.config.namesrvAddr=rmqnamesrv:9876 -Drocketmq.config.isVIPChannel=false
+    stdin_open: true
+    tty: true
+    ports:
+    - 8017:8080/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST}
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always

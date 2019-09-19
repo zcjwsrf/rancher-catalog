@@ -1,0 +1,9 @@
+.catalog:
+    name: "cache"
+    version: "1.0"
+    description: "缓存服务"        
+    
+redis:
+    scale: 1
+    start_on_create: true
+    retain_ip: true

@@ -1,0 +1,16 @@
+.catalog:
+    name: "hc"
+    version: "1.0"
+    description: "健康城市reids哨兵集群"       
+
+version: '2'
+services:
+  redis-master:
+    scale: 1
+    start_on_create: true
+  redis-slave:
+    scale: 3
+    start_on_create: true
+  redis-sentinel:
+    scale: 3
+    start_on_create: true

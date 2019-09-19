@@ -1,0 +1,10 @@
+version: '2'
+services:
+  redis:
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-redis:1.0
+    privileged: true
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: cache_lb=redis

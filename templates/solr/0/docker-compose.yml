@@ -1,0 +1,21 @@
+version: '2'
+services:
+  zookeeper:
+    image: zookeeper
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: ${HOST_LABEL}
+      io.rancher.container.pull_image: always
+  solr:
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-solr-ik:1.0
+    environment:
+      ZK_HOST: zookeeper:2181
+    stdin_open: true
+    volumes:
+    - ${DATA_VOLUME}:/opt/solr/server/solr/mycores
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: ${HOST_LABEL}
+

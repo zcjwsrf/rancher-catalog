@@ -1,0 +1,7 @@
+name:  Nginx 网关
+description: |
+   基于Nginx的网关入口服务
+version:  1.0
+category:  atag
+maintainer:  ATAG
+license:  商业授权

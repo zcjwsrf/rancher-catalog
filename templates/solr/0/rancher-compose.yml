@@ -1,0 +1,32 @@
+.catalog:
+    name: "Solr & Zookeeper"
+    version: "1.0"
+    description: "Apache Solr、Apache Zookeepr整合支持中文分词(IKAnalizer)"    
+
+    questions:            
+      - variable: "HOST_LABEL"
+        label: "部署主机标签"
+        description: "可通过设置主机标签，在指定的主机上部署服务" 
+        required: true
+        type: "string"
+        default: "solr_lb=true"
+      - variable: "DATA_VOLUME"
+        label: "数据存储目录"
+        description: "挂载主机目录存储数据, 需要在主机上执行 chmod -R 777 /hc/data/solr/mycores 设置权限" 
+        required: true
+        type: "string"
+        default: "/hc/data/solr/mycores"
+        
+version: '2'
+services:
+  zookeeper:
+    retain_ip: true
+    scale: 1
+    start_on_create: true
+  solr:
+    retain_ip: true
+    scale: 1
+    start_on_create: true
+
+
+

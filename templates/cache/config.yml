@@ -1,0 +1,7 @@
+name:  Cache
+description: |
+   Redis缓存服务
+version:  1.0
+category:  atag
+maintainer:  ATAG
+license:  商业授权

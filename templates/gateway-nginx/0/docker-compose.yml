@@ -1,0 +1,17 @@
+version: '2'
+volumes:
+  nginx-conf.d:
+    external: true
+    driver: rancher-nfs
+services:
+  nginx:
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-nginx:1.0
+    stdin_open: true
+    volumes:
+    - nginx-conf.d:/etc/nginx/conf.d/
+    tty: true
+    ports:
+    - 80:80/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: gateway_lb=true

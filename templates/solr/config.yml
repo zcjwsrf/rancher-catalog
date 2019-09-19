@@ -1,0 +1,7 @@
+name: Apache Solr
+description: |
+   Apache Solr、Apache Zookeepr整合支持中文分词(IKAnalizer)
+version:  1.0
+category:  atag
+maintainer:  ATAG
+license:  商业授权

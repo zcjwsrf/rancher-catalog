@@ -1,0 +1,64 @@
+.catalog:
+    name: "hc"
+    version: "1.0"
+    description: "健康城市相关工具"       
+
+gateway-lb:
+  scale: 1
+  start_on_create: true
+  lb_config:
+    certs: []
+    port_rules:
+    - hostname: hcn.atag.bsoft.com.cn
+      path: /hcn-web/upload/
+      priority: 1
+      protocol: http
+      service: hc/hcn-web-master
+      source_port: 8800
+      target_port: 8080
+    - hostname: hcn.atag.bsoft.com.cn
+      path: /hcn-web
+      priority: 2
+      protocol: http
+      service: hc/hcn-web-slave
+      source_port: 8800
+      target_port: 8080
+    - hostname: hcn.atag.bsoft.com.cn
+      path: /pcn-core
+      priority: 3
+      protocol: http
+      service: hc/pcn-core
+      source_port: 8800
+      target_port: 8080
+    - hostname: hc-wxmp.atag.bsoft.com.cn
+      path: ''
+      priority: 4
+      protocol: http
+      service: hc/hc-wxmp
+      source_port: 8800
+      target_port: 9529
+    - hostname: jenkins.atag.bsoft.com.cn
+      path: ''
+      priority: 5
+      protocol: http
+      service: tools/jenkins
+      source_port: 8800
+      target_port: 8080
+    - hostname: showdoc.atag.bsoft.com.cn
+      path: ''
+      priority: 6
+      protocol: http
+      service: tools/tools-showdoc
+      source_port: 8800
+      target_port: 80
+  health_check:
+    healthy_threshold: 2
+    response_timeout: 2000
+    port: 42
+    unhealthy_threshold: 3
+    initializing_timeout: 60000
+    interval: 2000
+    reinitializing_timeout: 60000
+
+
+

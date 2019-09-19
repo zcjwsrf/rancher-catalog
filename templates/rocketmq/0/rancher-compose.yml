@@ -1,0 +1,31 @@
+.catalog:
+  name: "RocketMQ"
+  version: "1.0"
+  description: "RocketMQ消息队列服务"
+  questions:
+      - variable: "SITE_HOST"
+        description: "外网访问IP地址或域名，{ip|domain}:{port}，多个逗号隔开如:127.0.0.1,atag.bsoft.com.cn"
+        label: "外网地址"
+        required: true
+        type: "string"
+        default: ""
+      - variable: "HOST_LABEL"
+        description: "在具有指定的主机上部署应用"
+        label: "主机标签"
+        required: true
+        type: "string"
+        default: "rmq_lb=true"
+        
+rmqnamesrv:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+rmqbroker:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+rocketmq-console-ng:
+  scale: 1
+  start_on_create: true
+
+

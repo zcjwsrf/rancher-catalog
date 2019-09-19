@@ -1,0 +1,162 @@
+version: '2'
+volumes:
+  download:
+    external: true
+    driver: rancher-nfs
+  hc-repository:
+    external: true
+    driver: rancher-nfs    
+services:
+  hcn-mpi:  
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-mpi:1.0
+    environment:       
+      DB_SVR: ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}     
+    stdin_open: true
+    external_links:
+    - zookeeper/zk:zookeeper
+    - cache/redis:redis
+    tty: true    
+    labels:
+      io.rancher.container.pull_image: always
+  hcn-web-master:    
+    image: registry.docker.hc:5000/hc-hcn-web-master:2.2-SNAPSHOT
+    environment:
+      SOLR_SVR: solr_svr
+      DB_SVR: ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}        
+    stdin_open: true
+    external_links:
+    - zookeeper/zk:zookeeper
+    - cache/redis:redis
+    volumes:
+    - hc-repository:/opt/repository
+    - download:/usr/local/tomcat/webapps/hcn-web/download
+    tty: true    
+    ports:
+    - 8000:8080/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web/upload
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always      
+  hcn-web-slave:
+    image: registry.docker.hc:5000/hc-hcn-web-slave:2.2-SNAPSHOT
+    environment:
+      SOLR_SVR: solr_svr
+      DB_SVR: ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    ports:
+    - 8001:8080/tcp    
+    external_links:
+    - zookeeper/zk:zookeeper
+    - cache/redis:redis
+    - rocketmq/rmqbroker:rmqbroker
+    - rocketmq/rmqnamesrv:rmqnamesrv
+    volumes:
+    - hc-repository:/opt/repository
+    - download:/usr/local/tomcat/webapps/hcn-web/download    
+    tty: true    
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  pcn-core:
+    image: registry.docker.hc:5000/hc-pcn-core:2.2-SNAPSHOT
+    environment:
+      TENANTID: hcn.dongtai
+      DB_SVR: ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    ports:
+    - 8010:8080/tcp      
+    external_links:
+    - zookeeper/zk:zookeeper
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-core
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  pcn-archive-visit:
+    image: registry.docker.hc:5000/hc-pcn-archive-visit:2.2-SNAPSHOT
+    environment:
+      SOLR_SVR: solr_svr
+      DB_SVR:  ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}    
+    stdin_open: true
+    external_links:
+    - zookeeper/zk:zookeeper
+    tty: true
+    ports:
+    - 8020:8080/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  hc-admin:
+    image: registry.docker.hc:5000/hc-admin:2.2-SNAPSHOT
+    environment:
+      SOLR_SVR: solr_svr
+      DB_SVR: ${DB_SVR}
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME} 
+      DB_USER: ${DB_USER} 
+      DB_PASS: ${DB_PASS}    
+    stdin_open: true
+    external_links:
+    - zookeeper/zk:zookeeper
+    tty: true
+    ports:
+    - 8030:8080/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hc-admin
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-adapter-a:
+    image: registry.docker.hc:5000/hc-hcn-adapter:2.2-SNAPSHOT
+    stdin_open: true
+    external_links:
+    - rocketmq/rmqbroker:rmqbroker
+    - rocketmq/rmqnamesrv:rmqnamesrv
+    - zookeeper/zk:zookeeper
+    tty: true
+    ports:
+    - 8040:8080/tcp    
+    labels:
+      io.rancher.container.pull_image: always   
+  hcn-interface-test:
+    image: registry.docker.hc:5000/hc-hcn-interface-test:2.2-SNAPSHOT
+    stdin_open: true
+    external_links:
+    - zookeeper/zk:zookeeper
+    tty: true
+    ports:
+    - 8050:8080/tcp
+    labels:
+      io.rancher.container.pull_image: always      
+  hc-wxmp:
+    image: registry.docker.hc:5000/hc-wxmp:3.0-SNAPSHOT
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST}
+      traefik.port: '9529'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always

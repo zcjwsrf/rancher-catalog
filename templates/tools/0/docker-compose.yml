@@ -1,0 +1,29 @@
+version: '2'
+volumes:
+  jenkins:
+    external: true
+    driver: rancher-nfs
+services:
+  jenkins:    
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-jenkins:alpine
+    stdin_open: true
+    volumes:
+    - /etc/ip:/etc/ip
+    - /var/run/docker.sock:/var/run/docker.sock    
+    - jenkins:/var/jenkins_home
+    tty: true    
+    ports:
+    - 8001:8080/tcp
+    labels:      
+      io.rancher.container.pull_image: always
+  registry:
+    image: registry
+    stdin_open: true
+    volumes:
+    - /hc/data/repository:/var/lib/registry
+    tty: true
+    ports:
+    - 5000:5000/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: registry_lb=true   
