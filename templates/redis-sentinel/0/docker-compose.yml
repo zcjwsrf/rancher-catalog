@@ -1,14 +1,5 @@
 version: '2'
 services:
-  redis-master:
-    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-master:latest
-    stdin_open: true
-    volumes:
-    - /etc/timezone:/etc/timezone
-    - /etc/localtime:/etc/localtime
-    tty: true
-    labels:
-      io.rancher.container.pull_image: always
   redis-slave:
     image: registry.cn-hangzhou.aliyuncs.com/jk/redis-slave:latest
     stdin_open: true
@@ -16,6 +7,19 @@ services:
     - /etc/timezone:/etc/timezone
     - /etc/localtime:/etc/localtime
     tty: true
+    links:
+    - redis-master:redis-master
+    labels:
+      io.rancher.container.pull_image: always
+  redis-master:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-master:latest
+    stdin_open: true
+    volumes:
+    - /etc/timezone:/etc/timezone
+    - /etc/localtime:/etc/localtime
+    tty: true
+    ports:
+    - 6379:6379/tcp
     labels:
       io.rancher.container.pull_image: always
   redis-sentinel:
@@ -25,5 +29,6 @@ services:
     - /etc/timezone:/etc/timezone
     - /etc/localtime:/etc/localtime
     tty: true
-    labels:
-      io.rancher.container.pull_image: always
+    links:
+    - redis-master:redis-master
+    - redis-slave:redis-slave
