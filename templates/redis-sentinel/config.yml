@@ -1,8 +1,7 @@
-name:  redis-sentinel
+name:  redis-sentinel哨兵模式
 description: |
    Redis哨兵模式集群缓存服务
 version:  1.0
 category:  bsoft
 maintainer:  zcj bsoft
 license:  商业授权
-projectURL:www.bsoft.com.cn

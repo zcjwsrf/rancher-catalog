@@ -1,7 +1,7 @@
-.catalog:
-    name: "hc"
+catalog:
+    name: "redis-sentinel"
     version: "1.0"
-    description: "健康城市reids哨兵集群"       
+    description: "Redis哨兵模式集群缓存服务"       
 
 version: '2'
 services:
