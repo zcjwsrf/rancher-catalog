@@ -58,6 +58,7 @@ services:
       ZOOKEEPER_SERVER: ckb-zookeeper:2181
       RPC_SERVER: 0.0.0.0:49005
       RPC_HCN_DISEASELIBRARY_SERVER: 183.58.24.160:37303
+      JAVA_OPTS: -Dfile.encoding=UTF-8
     stdin_open: true
     volumes:
     - /etc/timezone:/etc/timezone
