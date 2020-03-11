@@ -8,7 +8,7 @@ volumes:
     driver: rancher-nfs    
 services:
   hcn-mpi:  
-    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-mpi:1.0
+    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-mpi:3.2
     environment:       
       DB_SVR: ${DB_SVR}
       DB_PORT: ${DB_PORT} 
@@ -23,7 +23,7 @@ services:
     labels:
       io.rancher.container.pull_image: always
   hcn-web-master:    
-    image: registry.docker.hc:5000/hc-hcn-web-master:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-web-master:3.2.03-SNAPSHOT
     environment:
       SOLR_SVR: solr_svr
       DB_SVR: ${DB_SVR}
@@ -47,7 +47,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always      
   hcn-web-slave:
-    image: registry.docker.hc:5000/hc-hcn-web-slave:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-web-slave:3.2.03-SNAPSHOT
     environment:
       SOLR_SVR: solr_svr
       DB_SVR: ${DB_SVR}
@@ -73,7 +73,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   pcn-core:
-    image: registry.docker.hc:5000/hc-pcn-core:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-pcn-core:3.2.03-SNAPSHOT
     environment:
       TENANTID: hcn.dongtai
       DB_SVR: ${DB_SVR}
@@ -93,7 +93,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   pcn-archive-visit:
-    image: registry.docker.hc:5000/hc-pcn-archive-visit:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-pcn-archive-visit:3.2-SNAPSHOT
     environment:
       SOLR_SVR: solr_svr
       DB_SVR:  ${DB_SVR}
@@ -110,14 +110,9 @@ services:
     labels:
       io.rancher.container.pull_image: always
   hc-admin:
-    image: registry.docker.hc:5000/hc-admin:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hc-admin-dist:3.2-develop-SNAPSHOT
     environment:
       SOLR_SVR: solr_svr
-      DB_SVR: ${DB_SVR}
-      DB_PORT: ${DB_PORT} 
-      DB_NAME: ${DB_NAME} 
-      DB_USER: ${DB_USER} 
-      DB_PASS: ${DB_PASS}    
     stdin_open: true
     external_links:
     - zookeeper/zk:zookeeper
@@ -125,12 +120,12 @@ services:
     ports:
     - 8030:8080/tcp
     labels:
-      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hc-admin
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/admin
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-adapter-a:
-    image: registry.docker.hc:5000/hc-hcn-adapter:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-adapter:3.2.03-SNAPSHOT
     stdin_open: true
     external_links:
     - rocketmq/rmqbroker:rmqbroker
@@ -142,7 +137,7 @@ services:
     labels:
       io.rancher.container.pull_image: always   
   hcn-interface-test:
-    image: registry.docker.hc:5000/hc-hcn-interface-test:2.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-interface-test:3.2.03-SNAPSHOT
     stdin_open: true
     external_links:
     - zookeeper/zk:zookeeper
@@ -152,7 +147,7 @@ services:
     labels:
       io.rancher.container.pull_image: always      
   hc-wxmp:
-    image: registry.docker.hc:5000/hc-wxmp:3.0-SNAPSHOT
+    image: registry.docker.hc:5000/hc-wxmp-dist:3.2-standard-SNAPSHOT
     stdin_open: true
     tty: true
     labels:
