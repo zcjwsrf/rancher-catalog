@@ -5,15 +5,18 @@ volumes:
     driver: rancher-nfs
 services:
   jenkins:    
-    image: registry.cn-hangzhou.aliyuncs.com/atag/hc-jenkins:alpine
+    image: jenkins/jenkins
     stdin_open: true
     volumes:
-    - /etc/ip:/etc/ip
-    - /var/run/docker.sock:/var/run/docker.sock    
     - jenkins:/var/jenkins_home
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /etc/ip:/etc/ip
+    - /usr/lib64/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    - /usr/bin/docker:/usr/bin/docker
     tty: true    
     ports:
     - 8082:8080/tcp
+    user: root
     labels:      
       io.rancher.container.pull_image: always
   registry:
