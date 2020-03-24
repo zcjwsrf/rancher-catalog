@@ -14,7 +14,6 @@ services:
     - /usr/lib64/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
     - /usr/bin/docker:/usr/bin/docker
     - /etc/localtime:/etc/localtime
-    - /etc/timezone:/etc/timezone
     tty: true    
     ports:
     - 8082:8080/tcp
