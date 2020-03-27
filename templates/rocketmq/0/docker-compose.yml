@@ -11,6 +11,13 @@ services:
       io.rancher.scheduler.affinity:host_label: ${HOST_LABEL}
   rmqbroker:
     image: registry.cn-hangzhou.aliyuncs.com/atag/rocketmq-broker:4.2.0
+    environment:
+      JAVA_OPT_XMS: 1g
+      JAVA_OPT_XMX: 1g
+      JAVA_OPT_XMN: 512m
+      NAMESRV: rmqnamesrv:9876
+      BROKER_IP1: rmqbroker
+      BROKER_IP2: rmqbroker
     stdin_open: true
     volumes:
     - /hc/data/rocketmq/store:/opt/store
