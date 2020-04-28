@@ -7,7 +7,7 @@ services:
   jenkins:    
     image: jenkins/jenkins
     environment:
-      JAVA_OPTS:-Duser.timezone=Asia/Shanghai
+      JAVA_OPTS: -Duser.timezone=Asia/Shanghai
     stdin_open: true
     volumes:
     - jenkins:/var/jenkins_home
