@@ -1,7 +1,7 @@
 .catalog:
     name: "hc"
-    version: "1.0"
-    description: "健康城市核心业务服务"    
+    version: "3.2.04"
+    description: "智慧健康通核心业务服务"    
     
     questions:            
       - variable: "DB_SVR"
@@ -40,18 +40,20 @@
         required: true
         type: "string"
         default: ""
-      - variable: "SMS_IHUYI_ACCOUNT"
-        label: "短信帐号"
-        description: "互亿无线短信平台登录帐号"        
-        required: false
-        type: "string"
-        default: "cf_hcn_zhongshan"
-      - variable: "SMS_IHUYI_PASSWORD"
-        label: "短信密码"
-        description: "互亿无线短信平台登录密码"        
-        required: false
-        type: "string"
-        default: "bsoft123456"
+hc-health:
+  scale: 1
+  start_on_create: true
+hcn-registration:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+hcn-adapter:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+hcn-interface:
+  scale: 1
+  start_on_create: true
 hcn-mpi:
   retain_ip: true
   scale: 1
@@ -60,8 +62,29 @@ hcn-web-slave:
   retain_ip: true
   scale: 1
   start_on_create: true
+admin-old:
+  scale: 1
+  start_on_create: true
+hcn-pay:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+fds:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+pcn-online-consult:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+hc-interface-demo:
+  scale: 1
+  start_on_create: true
 pcn-core:
   retain_ip: true
+  scale: 1
+  start_on_create: true
+pcn-archive-visit:
   scale: 1
   start_on_create: true
 hcn-web-master:
@@ -69,14 +92,8 @@ hcn-web-master:
   scale: 1
   start_on_create: true
 hc-wxmp:
-  retain_ip: true
   scale: 1
   start_on_create: true
-hcn-adapter-a:
-  retain_ip: true
+admin-dist:
   scale: 1
-  start_on_create: true  
-hcn-interface-test:
-  retain_ip: true
-  scale: 1
-  start_on_create: true  
+  start_on_create: true
