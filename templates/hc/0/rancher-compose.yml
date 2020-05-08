@@ -62,9 +62,6 @@ hcn-web-slave:
   retain_ip: true
   scale: 1
   start_on_create: true
-admin-old:
-  scale: 1
-  start_on_create: true
 hcn-pay:
   retain_ip: true
   scale: 1
@@ -75,9 +72,6 @@ fds:
   start_on_create: true
 pcn-online-consult:
   retain_ip: true
-  scale: 1
-  start_on_create: true
-hc-interface-demo:
   scale: 1
   start_on_create: true
 pcn-core:
@@ -91,7 +85,7 @@ hcn-web-master:
   retain_ip: true
   scale: 1
   start_on_create: true
-hc-wxmp:
+wxmp-dist:
   scale: 1
   start_on_create: true
 admin-dist:

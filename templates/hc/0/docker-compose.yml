@@ -68,7 +68,7 @@ services:
     ports:
     - 8106:8106/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn;PathPrefix:/hcn-registration
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-registration
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -99,7 +99,6 @@ services:
     tty: true
     links:
     - hcn-adapter:adapter
-    - hc-interface-demo:yygh-demo
     ports:
     - 9998:9998/tcp
     - 8108:8108/tcp
@@ -169,28 +168,8 @@ services:
     - 8080:8080/tcp
     - 8103:8103/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178,jilin-test.bsoft.com.cn;PathPrefix:/hcn-web
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web
       traefik.port: '8080'
-      traefik.enable: 'true'
-      io.rancher.container.pull_image: always
-  admin-old:
-    image: registry.docker.hc:5000/hc-admin:3.0-SNAPSHOT
-    environment:
-      HEALTH_CITY_BAIDUMAPKEY: 5YmpXVGHERnG1Pd6beAmORGSORpV3rox
-      HEALTH_CITY_COMSERVICE: http://hc.zk.atag.bsoft.com.cn/hcn-web
-      HEALTH_CITY_EXPORTVISIT: http://hc.zk.atag.bsoft.com.cn/pcn-archive-visit/archivevisit/download
-      HEALTH_CITY_IMGPRIVIEW: http://hc.zk.atag.bsoft.com.cn/hcn-web/upload
-      HEALTH_CITY_IMGUPLOAD: http://hc.zk.atag.bsoft.com.cn/hcn-web/upload
-      HEALTH_CITY_LOGINTITLE_EN: Bsoft Health City Platform
-      HEALTH_CITY_LOGINTITLE_ZH: 创业家医管理平台
-      HEALTH_CITY_WEBSOCKETURL: http://hc.zk.atag.bsoft.com.cn/pcn-core
-    stdin_open: true
-    tty: true
-    ports:
-    - 9529:9529/tcp
-    labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn;PathPrefix:/admin444
-      traefik.port: '9529'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-pay:
@@ -232,7 +211,7 @@ services:
     - 8115:8105/tcp
     - 8584:8080/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,pay.zk.atag.bsoft.com.cn;PathPrefix:/hcn-pay
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-pay
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -315,23 +294,7 @@ services:
     ports:
     - 8136:8136/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178;PathPrefix:/pcn-online-consult
-      traefik.port: '8080'
-      traefik.enable: 'true'
-      io.rancher.container.pull_image: always
-  hc-interface-demo:
-    image: registry.docker.hc:5000/hc-interface-demo:1.0.0-SNAPSHOT
-    environment:
-      HCN_SERVICE_URL: http://interface:9998/HcnWebService?wsdl
-      WXPACK_CONFIG_APPID: interfacedemo
-      hcn.interface.url: http://interface:8080/hcn-interface
-      hcn.web.url: http://hcnwebslave:8080
-    stdin_open: true
-    tty: true
-    links:
-    - hcn-interface:interface
-    labels:
-      traefik.frontend.rule: Host:interfacedemo.zk.atag.bsoft.com.cn
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-online-consult
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -360,7 +323,7 @@ services:
     ports:
     - 8104:8104/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178;PathPrefix:/pcn-core
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-core
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -386,7 +349,7 @@ services:
     ports:
     - 8109:8109/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178;PathPrefix:/pcn-archive-visit
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-archive-visit
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -422,11 +385,11 @@ services:
     ports:
     - 8102:8102/tcp
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178,jilin-test.bsoft.com.cn;PathPrefix:/hcn-web/upload
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web/upload
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
-  hc-wxmp:
+  wxmp-dist:
     image: registry.docker.hc:5000/hc-wxmp-dist:3.2-standard-SNAPSHOT
     environment:
       WXPACK_CONFIG_TITLE: 微信标准版测试
@@ -442,25 +405,16 @@ services:
     - wxmp-node-modules:/hc/wxmp/node_modules
     tty: true
     labels:
-      traefik.frontend.rule: Host:wx.zk.atag.bsoft.com.cn
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/dist
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   admin-dist:
     image: registry.docker.hc:5000/hc-hc-admin-dist:3.2-develop-SNAPSHOT
-    environment:
-      HEALTH_CITY_IMGUPLOAD: http://hc.zk.atag.bsoft.com.cn/hcn-web/upload
-      HEALTH_CITY_IMGPRIVIEW: http://hc.zk.atag.bsoft.com.cn/hcn-web/upload
-      HEALTH_CITY_COMSERVICE: http://hc.zk.atag.bsoft.com.cn/hcn-web
-      HEALTH_CITY_EXPORTVISIT: http://hc.zk.atag.bsoft.com.cn/pcn-archive-visit/archivevisit/download
-      HEALTH_CITY_WEBSOCKETURL: http://hc.zk.atag.bsoft.com.cn/pcn-core
-      HEALTH_CITY_LOGINTITLE_ZH: 健康城市管理平台
-      HEALTH_CITY_LOGINTITLE_EN: Health Citys Management Platform
-      HEALTH_CITY_BAIDUMAPKEY: 5YmpXVGHERnG1Pd6beAmORGSORpV3rox
     stdin_open: true
     tty: true
     labels:
-      traefik.frontend.rule: Host:hc.zk.atag.bsoft.com.cn,atagmp.bsoft.com.cn,10.8.3.178;PathPrefix:/admin
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/admin
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
