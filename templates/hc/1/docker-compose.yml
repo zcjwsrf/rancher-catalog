@@ -391,15 +391,6 @@ services:
       io.rancher.container.pull_image: always
   wxmp-dist:
     image: registry.docker.hc:5000/hc-wxmp-dist:3.2-standard-SNAPSHOT
-    environment:
-      WXPACK_CONFIG_TITLE: Î¢ÐÅ±ê×¼°æ²âÊÔ
-      WXPACK_CONFIG_APPID: wx403a3c5e4b2b2341
-      WXPACK_CONFIG_IMGPREVIEWURL: http://hc.zk.atag.bsoft.com.cn/hcn-web/upload
-      WXPACK_CONFIG_NEWSURL: http://hc.zk.atag.bsoft.com.cn/pcn-core
-      WXPACK_CONFIG_NEWSDETAILURL: http://hc.zk.atag.bsoft.com.cn/pcn-core/h5/views/resident/healthnews.html
-      WXPACK_CONFIG_SERVICEURL: http://hc.zk.atag.bsoft.com.cn/hcn-web
-      WXPACK_CONFIG_NOTNEEDLOGINMODULE: '11'
-      WXPACK_CONFIG_MEDICALCOPYURL: '1'
     stdin_open: true
     volumes:
     - wxmp-node-modules:/hc/wxmp/node_modules
