@@ -26,7 +26,7 @@ volumes:
     driver: rancher-nfs
 services:
   hc-health:
-    image: registry.docker.hc:5000/hc-hc-health-dev:3.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hc-health-dev:3.3.01-SNAPSHOT
     stdin_open: true
     external_links:
     - zookeeper/zookeeper:zookeeper
@@ -44,7 +44,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-registration:
-    image: registry.docker.hc:5000/hc-hcn-registration:3.2.03-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-registration:3.3.01-SNAPSHOT
     environment:
       BROADCAST_SVR: hcn-web-master
       DB_NAME: ${DB_NAME}
@@ -73,7 +73,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-adapter:
-    image: registry.docker.hc:5000/hc-hcn-adapter:3.2.03-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-adapter:3.3.01-SNAPSHOT
     environment:
       JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8107
     stdin_open: true
@@ -85,7 +85,7 @@ services:
     labels:
       io.rancher.container.pull_image: always
   hcn-interface:
-    image: registry.docker.hc:5000/hc-hcn-interface:3.2.03-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-interface:3.3.01-SNAPSHOT
     environment:
       JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8108
     stdin_open: true
@@ -128,7 +128,7 @@ services:
     labels:
       io.rancher.container.pull_image: always
   hcn-web-slave:
-    image: registry.docker.hc:5000/hc-hcn-web-slave:3.2.04-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-web-slave:3.3.01-SNAPSHOT
     environment:
       DB_NAME: ${DB_NAME}
       DB_PASS: ${DB_PASS}
@@ -173,7 +173,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-pay:
-    image: registry.docker.hc:5000/hc-hcn-pay:3.2.04-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-pay:3.3.01-SNAPSHOT
     environment:
       BROADCAST_SVR: hcn-web-master
       DB_NAME: ${DB_NAME}
@@ -216,7 +216,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   fds:
-    image: registry.docker.hc:5000/hc-fds-dev:3.2.03-SNAPSHOT
+    image: registry.docker.hc:5000/hc-fds-dev:3.3.01-SNAPSHOT
     environment:
       JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8101
       DB_SVR: ${DB_SVR}
@@ -247,7 +247,7 @@ services:
     labels:
       io.rancher.container.pull_image: always
   pcn-online-consult:
-    image: registry.docker.hc:5000/hc-pcn-online-consult:3.2.04-SNAPSHOT
+    image: registry.docker.hc:5000/hc-pcn-online-consult:3.3.01-SNAPSHOT
     environment:
       DB_NAME: ${DB_NAME}
       DB_PASS: ${DB_PASS}
@@ -265,6 +265,12 @@ services:
       WECHAT_APPID: wxc05533898d6fd716
       WECHAT_SECRET: ''
       ADMIN_COUNT: '30'
+      EASEMOB_APPKEY=1102191018040093#hcn-jkcs
+      EASEMOB_ORGNAME=1102191018040093
+      EASEMOB_APPNAME=hcn-jkcs
+      EASEMOB_CLIENT_ID=YXA64o0UngyBS5mX9CtOYsJKlA
+      EASEMOB_CLIENT_SECRET=YXA6UYfhOiHYnXcPYvKDr4n1828m9tw
+      EASEMOB_URL=http://a1.easemob.com/
       SP_APP_ID: trtc_test
       SP_APP_CODE: trtc_test
       SP_APP_NAME: \u6D59\u6C5F\u7701-\u53F0\u5DDE\u5E02-\u6E29\u5CAD\u5E02\u4E2D\u533B\u9662
@@ -299,7 +305,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   pcn-core:
-    image: registry.docker.hc:5000/hc-pcn-core:3.2.04-SNAPSHOT
+    image: registry.docker.hc:5000/hc-pcn-core:3.3.01-SNAPSHOT
     environment:
       DB_NAME: ${DB_NAME}
       DB_PASS: ${DB_PASS}
@@ -328,7 +334,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   pcn-archive-visit:
-    image: registry.docker.hc:5000/hc-pcn-archive-visit:3.2-SNAPSHOT
+    image: registry.docker.hc:5000/hc-pcn-archive-visit:3.3.01-SNAPSHOT
     environment:
       DB_NAME: ${DB_NAME}
       DB_PASS: ${DB_PASS}
@@ -354,7 +360,7 @@ services:
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hcn-web-master:
-    image: registry.docker.hc:5000/hc-hcn-web-master:3.2.03-SNAPSHOT
+    image: registry.docker.hc:5000/hc-hcn-web-master:3.3.01-SNAPSHOT
     environment:
       DB_NAME: ${DB_NAME}
       DB_PASS: ${DB_PASS}
