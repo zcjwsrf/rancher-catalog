@@ -4,7 +4,7 @@ services:
     image: rawmind/alpine-traefik:1.5.4-1
     environment:
       TRAEFIK_ADMIN_AUTH_METHOD: basic
-      TRAEFIK_ADMIN_AUTH_USERS: 'atag:$$apr1$$tUR4xkyr$$GZTmAbWrO5YbX36UPufjL/'
+      TRAEFIK_ADMIN_AUTH_USERS: 'bsoft:$apr1$P9U4Xw7k$1fDoUpfEGOGlcUcSbZpxB.'
       TRAEFIK_ADMIN_ENABLE: 'true'
       TRAEFIK_ADMIN_PORT: '90'
       TRAEFIK_ADMIN_SSL: 'false'
