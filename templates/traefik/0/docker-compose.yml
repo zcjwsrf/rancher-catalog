@@ -2,6 +2,7 @@ version: '2'
 services:
   traefik:
     image: rawmind/alpine-traefik:1.5.4-1
+    restart: always 
     environment:
       TRAEFIK_ADMIN_AUTH_METHOD: basic
       TRAEFIK_ADMIN_AUTH_USERS: 'bsoft:$$apr1$$P9U4Xw7k$$1fDoUpfEGOGlcUcSbZpxB.'
