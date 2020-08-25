@@ -1,0 +1,16 @@
+catalog:
+    name: "redis-sentinel"
+    version: "1.0"
+    description: "Redis哨兵模式集群缓存服务"       
+
+version: '2'
+services:
+  redis-master:
+    scale: 1
+    start_on_create: true
+  redis-slave:
+    scale: 3
+    start_on_create: true
+  redis-sentinel:
+    scale: 3
+    start_on_create: true

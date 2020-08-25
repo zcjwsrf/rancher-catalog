@@ -1,8 +1,10 @@
 version: '2'
 services:
   redis-master:
-    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-master:latest
+    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-master:pass
     stdin_open: true
+    environment:
+      requirepass: requirepass bsoft123
     volumes:
     - /etc/timezone:/etc/timezone
     - /etc/localtime:/etc/localtime
@@ -10,8 +12,11 @@ services:
     labels:
       io.rancher.container.pull_image: always
   redis-slave:
-    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-slave:latest
+    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-slave:pass
     stdin_open: true
+    environment:
+      requirepass: requirepass bsoft123 
+      masterauth: masterauth bsoft123
     volumes:
     - /etc/timezone:/etc/timezone
     - /etc/localtime:/etc/localtime
@@ -21,8 +26,10 @@ services:
     labels:
       io.rancher.container.pull_image: always
   redis-sentinel:
-    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-sentinel:latest
+    image: registry.cn-hangzhou.aliyuncs.com/jk/redis-sentinel:pass
     stdin_open: true
+    environment:
+      sentinelauthpass: sentinel auth-pass mymaster bsoft123
     volumes:
     - /etc/timezone:/etc/timezone
     - /etc/localtime:/etc/localtime

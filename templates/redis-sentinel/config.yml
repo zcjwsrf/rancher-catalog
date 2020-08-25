@@ -1,6 +1,6 @@
 name:  redis-sentinel哨兵模式
 description: |
-   Redis哨兵模式集群缓存服务
+   Redis哨兵模式集群缓存服务,1.0不支持持久化密码，1.1支持持久化的密码配置
 version:  1.0
 category:  bsoft
 maintainer:  zcj bsoft
