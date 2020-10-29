@@ -1,0 +1,516 @@
+version: '2'
+volumes:
+  easemobChatMessagesData:
+    external: true
+    driver: rancher-nfs
+  pcn-core-logs:
+    external: true
+    driver: rancher-nfs
+  pcn-online-consult-test-logs:
+    external: true
+    driver: rancher-nfs
+  hcn-interface-logs:
+    external: true
+    driver: rancher-nfs
+  hcn-mpi-logs:
+    external: true
+    driver: rancher-nfs
+  hcn-pay-logs:
+    external: true
+    driver: rancher-nfs
+  pay_wxqrimage:
+    external: true
+    driver: rancher-nfs
+  wxmp-node-modules:
+    external: true
+    driver: rancher-nfs
+  hc-repository:
+    external: true
+    driver: rancher-nfs
+services:
+  hc-health:
+    image: registry.docker.hc:5000/hc-hc-health-zk:3.3.03-SNAPSHOT
+    stdin_open: true
+    external_links:
+    - zookeeper/zookeeper:zookeeper
+    volumes:
+    - hc-health-logs://usr/local/java-jar-hcn-health/
+    - /etc/localtime:/etc/localtime
+    tty: true
+    ports:
+    - 8110:8087/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-health
+      traefik.port: '8087'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  common-editor:
+    image: registry.docker.hc:5000/hc-followup:3.3.03-SNAPSHOT
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8096
+      RPC_SVR: 0.0.0.0:9124
+      ZK_SVR: zookeeper:2181
+      INDEXTREE_URL: http://hc.zk.atag.bsoft.com.cn/common-clinical
+      IMAGE_URL: https://hol.bsoft.com.cn/file-zk/
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - pay_wxqrimage:/home/wxqrimage
+    - hcn-pay-logs:/data/logs/hcn-pay-test/
+    tty: true
+    ports:
+    - 8096:8080/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/followup
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  common-clinical:
+    image: registry.docker.hc:5000/hc-common-clinical:3.3.03-SNAPSHOT
+    environment:
+      ADMIN_USER_ID: '1'
+      BROADCAST_SVR: hcn-web-master
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      EDITOR_FOLLOW_UP: https://jkt.bsoft.com.cn/followup-zk
+      GOL_CLIENT_URL: https://jkt.bsoft.com.cn/pcn-online-consult-zk
+      GOL_FAMILY_URL: https://jkt.bsoft.com.cn/hcn-web-zk
+      HIS_CLIENT_URL: http://10.8.3.125:8300/framework
+      IMAGE_URL: https://jkt.bsoft.com.cn/file-zk/
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8099
+      PROJECT_SOURCE: GOL
+      RPC_SVR: 0.0.0.0:9124
+      ZK_SVR: zookeeper:2181
+      ESIGN_URL: https://smlopenapi.esign.cn
+      SIGN_APP_ID: '7438804062'
+      SIGN_APP_SECRET: 2c9c44c93527164591e9bf5d225a3179
+      WEB_SERVICE_URL: http://10.8.3.125:8089/mrc/ws/service.ws?wsdl
+      WHIS_PATH_URL: http://10.8.2.178:8081/bs-whis/
+      EXAM_APPOINTMENT_URL: http://10.8.0.63:8084/labAppointment/app/labAppointment.do
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - pay_wxqrimage:/home/wxqrimage
+    - hcn-pay-logs:/data/logs/hcn-pay-test/
+    tty: true
+    ports:
+    - 8099:8099/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/common-clinical/
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-registration:
+    image: registry.docker.hc:5000/hc-hcn-registration:3.3.03-SNAPSHOT
+    environment:
+      BROADCAST_SVR: hcn-web-master
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8106
+      RPC_SVR: 0.0.0.0:9125
+      YYGH_SOURCE: '1'
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    tty: true
+    ports:
+    - 8106:8106/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-registration
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-adapter:
+    image: registry.docker.hc:5000/hc-hcn-adapter:3.3.03-SNAPSHOT
+    environment:
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8107
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - zookeeper/zookeeper:zookeeper
+    tty: true
+    ports:
+    - 8107:8107/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  hcn-interface:
+    image: registry.docker.hc:5000/hc-hcn-interface:3.3.03-SNAPSHOT
+    environment:
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8108
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - hcn-interface-logs:/data/logs/hcn-interface-test
+    tty: true
+    links:
+    - hcn-adapter:adapter
+    ports:
+    - 9998:9998/tcp
+    - 8108:8108/tcp
+    labels:
+      traefik.frontend.rule: Host:interface.${SITE_HOST};
+      traefik.port: '9998'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-mpi:
+    image: registry.docker.hc:5000/hc-mpi:3.3.03-SNAPSHOT
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - /etc/localtime:/etc/localtime
+    - /etc/timezone:/etc/timezone
+    - hcn-mpi-logs:/hc/mpi/logs
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  hcn-web-slave:
+    image: registry.docker.hc:5000/hc-hcn-web-slave:3.3.03-SNAPSHOT
+    environment:
+      CKB_SVR: 10.8.3.178:49005
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      DEBUG_MODE: 'false'
+      HCN_MASTER: ${SITE_HOST}
+      HEALTHENCYCLOPEDIA_APPID: 123abc
+      HEALTHENCYCLOPEDIA_SERVICEURL: http://api2.test.aijk.net/open/ckb/health_encyclopedia
+      HEALTHENCYCLOPEDIA_SEURITKEY: '111111678678'
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8103
+      SMS_MODE: rpc
+      SMS_RPC: hcn.smsService
+      SOLR_SVR: solr_svr:2181
+      WELCOM_MESSAGE: '1111'
+      WX_MP_APP_ID: wxc05533898d6fd716
+      ZK_SVR: zookeeper:2181
+      ZUJIAN_APPID: bsoft
+      ZUJIAN_APPSECRET: c84f159538354e2f99205f9fbea52f56
+      ZUJIAN_SMSGATEWAY: http://10.8.3.63:8081/api/msg/sms/send
+      rocketmq.namesrvAddr: rmqnamesrv:9876
+    stdin_open: true
+    external_links:
+    - solr/zookeeper:solr_svr
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    - rocketmq/rmqnamesrv:rmqnamesrv
+    volumes:
+    - /etc/localtime:/etc/localtime
+    - /home/hc/data/repository:/opt/repository
+    - hcn-web-slave-logs:/data/logs/hcn-web-slave/
+    tty: true
+    links:
+    - hcn-web-master:hcn-web-master
+    ports:
+    - 8080:8080/tcp
+    - 8103:8103/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-pay:
+    image: registry.docker.hc:5000/hc-hcn-pay:3.3.03-SNAPSHOT
+    environment:
+      BROADCAST_SVR: hcn-web-master
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      HCN_PAY_WWW: ${SITE_HOST}/hcn-pay
+      HEALTH_PAY_DES_KEY: kuY9dUWR4Fg=
+      HEALTH_PAY_DEVELOPER_ID: '93053'
+      HEALTH_PAY_MERCHANT_ID: '809900000001'
+      HEALTH_PAY_PAY_PLATE_FORM_ADDRESS: http://onlinetest.bsoftpay.com/gatewayOnline/gateway/portal/frontReq
+      HEALTH_PAY_PRIVATE_KEY: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAsW7HTxqVMStaQDiwKVqi9cMO4Y8mdhcHZuyjODfizpnK9h3UXCIJnV1mQZIOSrxACvN82QGjKKPRq42E5t6pmQIDAQABAkAV1x/7cbc5lS+HxjKQ9JIolDkJtLg0QwNrPOeebOqjKYBHw5DglZTVAbP+w8kohl+C4NDEClQb5G2Yf/9vlDydAiEA78sTopUC4JsthFBm7cEuXVThR5Jz9NZh/mpZuH+99EcCIQC9bLwLX+hPa4cWkwUcp+gzNoVZ5sbMPVvlL9MrddTDHwIhAKiGdZ8+0I3gIWYrR5tyuE4ZuFYfxGTfQnGWdsXm6S5DAiBXzwvsiez6w/G/OS/pdLxi4Sc34Y7OJrNurpjJULnsKQIgWHdbZG3m1yc1kG11y/WPHO4DuyOMQTPaNo7xHEhlg28=
+      HEALTH_PAY_PUBLIC_KEY: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIdWIm0ruv6S32QUUNZ0nVpblslhvpxpcE7pr9KTtNCwGhXLFl90IrSqCBCfkm5EVxNoiWT5s3hyemqPIiZ8wdsCAwEAAQ==
+      HEALTH_PAY_REMOTE_ENDPOINT: http://onlinetest.bsoftpay.com/gatewayOnline/gateway/portal
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8105
+      PAY_DEBUG_MODE: '0'
+      PAY_LOCK_TIME: '15'
+      RPC_SVR: 0.0.0.0:9124
+      UNIVERSALINK: https://atagmp.bsoft.com.cn
+      ZK_SVR: zookeeper:2181
+      MCHID: '6979'
+      PLATFORM_PAY_FEEDBACK_URL: https://jkt.bsoft.com.cn/hcn-pay-zk/platformPay/feedback
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - pay_wxqrimage:/home/wxqrimage
+    - hcn-pay-logs:/data/logs/hcn-pay-test/
+    tty: true
+    links:
+    - hcn-web-master:hcn-web-master
+    ports:
+    - 8105:8105/tcp
+    - 8584:8080/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-pay
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  fds:
+    image: registry.docker.hc:5000/hc-fds-dev:3.3.03-SNAPSHOT
+    environment:
+      BROADCAST_SVR: hcn-web-master
+      DB_DRIVER: com.mysql.jdbc.Driver
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      DEBUG_MODE: 'false'
+      FDS_REDIS_HOST: redis
+      FDS_REDIS_PORT: '6379'
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8101
+      RPC_SVR: 0.0.0.0:9104
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+    tty: true
+    ports:
+    - 8101:8101/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  common-web-dist:
+    image: registry.docker.hc:5000/common-web-dist:3.2-common-SNAPSHOT
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/common-web-dist
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  pcn-online-consult:
+    image: registry.docker.hc:5000/hc-pcn-online-consult:3.3.03-SNAPSHOT
+    environment:
+      ADMIN_COUNT: '30'
+      BROADCAST_SVR: hcn-web-master
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      DOCTOR_REFIX: doctor_
+      EASEMOB_APPKEY: 1133170216115243#jkcs-zk
+      EASEMOB_APPNAME: jkcs-zk
+      EASEMOB_CLIENT_ID: YXA6geovPxyGRGiVyC9sf7xppQ
+      EASEMOB_CLIENT_SECRET: YXA6gIz675nhVJ1tsud_w9AkA26IIiM
+      EASEMOB_ORGNAME: '1133170216115243'
+      EASEMOB_URL: http://a1.easemob.com/
+      EXCLUDE_ORG_IDS: ''
+      FILE_UPLOAD_URL: https://atagmp.bsoft.com.cn/pcn-online-consult-zk
+      IMAGE_UPLOAD_URL: https://atagmp.bsoft.com.cn/hcn-web-zk/upload
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8136
+      RPC_SVR: 0.0.0.0:9135
+      SP_APP_CODE: trtc_test
+      SP_APP_ID: trtc_test
+      SP_APP_NAME: \u6D59\u6C5F\u7701-\u53F0\u5DDE\u5E02-\u6E29\u5CAD\u5E02\u4E2D\u533B\u9662
+      SP_APP_REMARK: ''
+      SP_APP_SECRET: CBIwolSKdK1ovTt50yCNnD1E1iblNZSBfdDzvkexHZHMg9JZCD84DaIJG9iM86z70n5jNdUunacVczdaJXZKM24cDmoBLZTyetq4ToaZhYAYIWg8dWS4okxruOdWvQDS
+      SP_APP_STATUS: '1'
+      SP_APP_TYPE: subscribe
+      SP_ID: bsoft
+      SP_PRIVATE_KEY: +CgV4xxaxcZeZrE/pp8TaEbfGbvZiiISho9PSUaXYFYGDB/xmd0krtWP7Ja6zqd3llcR3WteJYPqDO21p0r5M
+      SP_PUBLIC_KEY: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9gsi5PE7OZc5CPT1Lx3p7U77v5ln+q0G1noJ+7Dqf96EWFhXO8eovNXe7pzOPATZGMzFtdah2MmZfgoFeMcWsXGXmaxP6afE2hG3xm72YoiEoaPT0lGl2BWBgwf8ZndJK7Vj+yWus6nd5ZXEd1rXiWD6gzttadK+TK/WU7Ns/awIDAQAB
+      SP_URL: https\://atagmp.bsoft.com.cn/
+      USER_REFIX: bsoft_
+      WECHAT_APPID: wxc05533898d6fd716
+      WECHAT_MINI_APPID: wx0c9a13690ee71490
+      WECHAT_SECRET: ''
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - /upload/file:/usr/local/tomcat/webapps/pcn-online-consult/upload/file
+    - easemobChatMessagesData:/upload/easemobChatMessagesData
+    - pcn-online-consult-test-logs:/data/logs/pcn-online-consult-test
+    tty: true
+    ports:
+    - 8136:8136/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-online-consult
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  common-mobile-dist:
+    image: registry.docker.hc:5000/common-mobile-dist:3.2-common-SNAPSHOT
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/common-mobile-dist
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  pcn-core:
+    image: registry.docker.hc:5000/hc-pcn-core:3.3.03-SNAPSHOT
+    environment:
+      BROADCAST_SVR: hcn-web-master
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8104
+      TENANTID: hcn.dongtai
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    volumes:
+    - /etc/localtime:/etc/localtime
+    - pcn-core-logs:/data/logs/pcn-core_test/
+    tty: true
+    links:
+    - hcn-web-master:hcn-web-master
+    ports:
+    - 8104:8104/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-core
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  pcn-archive-visit:
+    image: registry.docker.hc:5000/hc-pcn-archive-visit:3.3.03-SNAPSHOT
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8109
+      SOLR_SVR: solr_svr
+      ZK_SVR: zookeeper:2181
+    stdin_open: true
+    external_links:
+    - zookeeper/zookeeper:zookeeper
+    volumes:
+    - /etc/localtime:/etc/localtime
+    tty: true
+    ports:
+    - 8109:8109/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/pcn-archive-visit
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hc-wxmp:
+    image: registry.docker.hc:5000/hc-wxmp-dist:3.2-standard-zk-SNAPSHOT
+    stdin_open: true
+    volumes:
+    - wxmp-node-modules:/hc/wxmp/node_modules
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/dist
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  admin-dist:
+    image: registry.docker.hc:5000/hc-hc-admin-dist:3.2-develop-SNAPSHOT
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/admin
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hcn-web-master:
+    image: registry.docker.hc:5000/hc-hcn-web-master:3.3.03-SNAPSHOT
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_SVR: ${DB_SVR}
+      DB_USER: ${DB_USER}
+      DEBUG_MODE: 'true'
+      HCN_MASTER: hc.zk.atag.bsoft.com.cn
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8102
+      SMS_MODE: rpc
+      SMS_RPC: hcn.smsService
+      SOLR_SVR: solr_svr
+      ZK_SVR: zookeeper:2181
+      ZUJIAN_APPID: bsoft
+      ZUJIAN_APPSECRET: c84f159538354e2f99205f9fbea52f56
+      ZUJIAN_SMSGATEWAY: http://10.8.3.63:8081/api/msg/sms/send
+      rocketmq.namesrvAddr: rmqnamesrv:9876
+    stdin_open: true
+    external_links:
+    - redis-sentinel/redis-master:redis-master
+    - redis-sentinel/redis-slave:redis-slave
+    - zookeeper/zookeeper:zookeeper
+    - redis-sentinel/redis-sentinel:redis-sentinel
+    - solr/zookeeper:solr_svr
+    - rocketmq/rmqnamesrv:rmqnamesrv
+    - cache/redis:redis
+    volumes:
+    - repository:/opt/repository
+    - /etc/localtime:/etc/localtime
+    - hcn-web-master-logs:/data/logs/hcn-web-master
+    dns:
+    - 114.114.114.114
+    tty: true
+    ports:
+    - 8102:8102/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hcn-web/upload
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
