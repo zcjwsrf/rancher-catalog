@@ -38,7 +38,7 @@ services:
     image: registry.docker.hc:5000/hc-file:3.3.04.1000-SNAPSHOT
     stdin_open: true
     volumes:
-    - file-storage:/usr/local/tomcat/webapps/ROOT/upload
+    - file-storage:/usr/local/tomcat/webapps/file/upload
     - /etc/localtime:/etc/localtime
     - /etc/timezone:/etc/timezone
     tty: true
@@ -54,7 +54,7 @@ services:
     environment:
       common_clinical_url: https://xxxxxx.com.cn/common-clinical/
       hessian_proxy_url: http://proxy:8090/
-      hessian_sys_url: http://base-service:8080/
+      hessian_sys_url: http://base-service:8080/base-service/
       image_url: https://xxxxxx.com.cn/file-zk/
       regular_replace_pwd: '90'
     stdin_open: true
@@ -173,7 +173,7 @@ services:
       app_id: '2018062960428449'
       captchaCountMax: '20'
       hessian_proxy_url: http://proxy:8090/
-      hessian_sys_url: http://base-service:8080/
+      hessian_sys_url: http://base-service:8080/base-service/
       image_url: https://xxxxxx.com.cn/file-zk/
       private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDeaGO0C+M4wBngW8aCzQp1Sdknbq18YYsqVaHme2ZYTitj6C4SaCZhr4yIuk2dXkEWSddgye6uAhT5Ln86bOM80H2YjZNoFYLVDgyqspyIH+7qSw4lJKhPj0NJfgYC4tKo4gDzF2n9APHoAfwEkc4qvYGjXghie/HlwL+bijb863c3CB+bAFTIQut8v5WyShN+vF0laCNNB/pck1hY/mvccAbBJeqsBaH8tGwziO/hX7BXB+xIrBrLiNtAaeFB4wjd5oaQ2f3q7C6qN6TSZSqpSfrhZFUZv9ZkJtaeka0TuT7YGIm2ActAUWZ60iinwZjucgSV/K2ceQ8CRiKX5vGNAgMBAAECggEAT6Q578NB/pRrr7etgjFCSXXEWSZ84UlcuDAp5YrSv1RenUwLE3RQKjLetCdim7OgwwZ2Jaap3Y3JTOGllZpgVOqjzvkDjAYH75s0VfvXqbclqqhtzEcwLi0y/yItrOLkZK1pgaMkxQCNn3L2d/xuQ0fRIFsPzZRsrsUy19PKlQ5hoeSFa5nimr7zpPsr4u/x6RWv9pFxZGqUeVnWYlTL17fWrh1VlNN0JRv++kCeZdagh5Qa4WtcKz3RND3HqjL3WgEpR4aNi4mCiyOcrF8GihiHg4H9deqi4PFCgAFUw5QPqJ5+djhCEp2Zc56QJv6dy9g5VdiINxwZyVpYSt3R0QKBgQDvHZY5R71h6BxnBR1tZUNaav6i6+JPKUw6qaikHORM2PFNyq2HaVdYBDcd0IeUaj/2f4JJPn/+qcw7/Nt7Vr13Vfq9Be/yiQUM/BcLyJfR2ByA609tDCQ/HQJis7sxR6jd33ytlTImXDuKNqGlkVXfAzXsICH5IpZ1bhjzfOhIrwKBgQDuHMf/Mfn4BHsCnRWPQPwyrGukAyO9eSs5Q36J3UtnWl+hB7SbFplr3jhoR96S8Nnt9dc0lfNpgonqKSs4JZZjh72sj+8YJPTlrTAAq0A0BYE8ZLiF4MBHQgkk4fA4HG24UZk1TtvbwEP7Dv/oChX6HwGR08cXRGL2Be247oJAgwKBgDOjVxLNrFddcezJjP5X9QCsxIrYmAnyaDTu+K1gU+lInGvpTipFFIi8eE6m/vCNNXz9Mlyw86FCeAmoZJmxNL91wO1bP+NHteCE/FEeI7M8kYNBzehFy/oZQK+iEtXknNI1dk5iPu9L0cvaWnRP+5RqtBVnJw8PaiC4AwlqOxufAoGADTe/ymTF0YS+J1j892TOGyoDF6ms9DmjspwSjCiipOwZXuEEn49TmO9PBkrnChUgo9r/xUWFq5e5fCwo4AcGICRK3SdoSFjU12MTxRW8jKa5k9arf5MIWWxLAachJJw/Yvn0nUbxYXN80pT0k7brnWTXO3ccGCiNrcaKebeTt20CgYEAgZmRpXP5Ze5tK0+TcVTQh6hYCzLGMJiT/dENvTDKJEJIbKvwc+o1DIFnBiGXYWo+FMOFhJkXElUHA+2BfNMTh3MjNfpJwyF5QEzkP2Jgr1gJGg5PGfaFZvUVos1lAiCdEQvLDu1weGBlX8WDlzo0C9M2FCMotuNxlF2+xtzzv4k=
       public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3mhjtAvjOMAZ4FvGgs0KdUnZJ26tfGGLKlWh5ntmWE4rY+guEmgmYa+MiLpNnV5BFknXYMnurgIU+S5/OmzjPNB9mI2TaBWC1Q4MqrKciB/u6ksOJSSoT49DSX4GAuLSqOIA8xdp/QDx6AH8BJHOKr2Bo14IYnvx5cC/m4o2/Ot3NwgfmwBUyELrfL+VskoTfrxdJWgjTQf6XJNYWP5r3HAGwSXqrAWh/LRsM4jv4V+wVwfsSKway4jbQGnhQeMI3eaGkNn96uwuqjek0mUqqUn64WRVGb/WZCbWnpGtE7k+2BiJtgHLQFFmetIop8GY7nIElfytnHkPAkYil+bxjQIDAQAB
@@ -200,7 +200,7 @@ services:
       app_secret: 37618e5603fd1fc158786e8ba5fe5b78
       captchaCountMax: '20'
       hessian_proxy_url: http://proxy:8090/
-      hessian_sys_url: http://base-service:8080/
+      hessian_sys_url: http://base-service:8080/base-service/
       hos_name: 创业慧康互联网医院
       image_url: https://xxxxxx.com.cn/file-zk/
       mini_app_id: wx0c9a13690ee71490
