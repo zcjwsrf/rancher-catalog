@@ -1,0 +1,81 @@
+.catalog:
+    name: "hc-cloud"
+    version: "1.0.0"
+    description: "组件服务"
+    questions:
+      - variable: "DB_SVR"
+        label: "数据库IP"
+        description: "MySQL数据库服务器访问IP" 
+        required: true
+        type: "string"
+        default: "10.8.3.53"
+      - variable: "DB_PORT"
+        label: "数据库端口"
+        description: "MySQL数据库服务器的访问端口"        
+        required: true
+        type: "string"
+        default: "3306"
+      - variable: "DB_NAME"
+        label: "数据库名"
+        description: "MySQL数据库服务器中健康城市系统的库名"        
+        required: true
+        type: "string"  
+        default: "hcp"
+      - variable: "DB_USER"
+        label: "数据库用户"
+        description: "MySQL数据库登录用户名称"        
+        required: true
+        type: "string" 
+        default: "root"
+      - variable: "DB_PASS"
+        label: "数据库登录密码"
+        description: "MySQL数据库登录密码，需要填写加密后字符串，默认密码为atagbsoft"
+        required: true
+        type: "string"
+        default: "111111"
+      - variable: "SITE_HOST"
+        description: "外网访问IP地址或域名，{ip|domain}:{port}，多个逗号隔开如:127.0.0.1,atag.bsoft.com.cn"
+        label: "外网地址"
+        required: true
+        type: "string"
+        default: ""
+
+hc-cloud-gateway:
+  scale: 1
+  start_on_create: true
+zipkin:
+  scale: 1
+  start_on_create: true
+hc-cloud-open:
+  scale: 1
+  start_on_create: true
+hc-cloud-ops-admin:
+  scale: 1
+  start_on_create: true
+hc-cloud-stat:
+  scale: 1
+  start_on_create: true
+hc-cloud-oss:
+  scale: 1
+  start_on_create: true
+hc-cloud-ucenter:
+  scale: 1
+  start_on_create: true
+redis:
+  scale: 1
+  start_on_create: true
+hc-cloud-registry:
+  scale: 1
+  start_on_create: true
+hc-cloud-video:
+  scale: 1
+  start_on_create: true
+hc-cloud-msg:
+  scale: 1
+  start_on_create: true
+hc-cloud-im:
+  scale: 1
+  start_on_create: true
+hc-cloud-auth:
+  scale: 1
+  start_on_create: true

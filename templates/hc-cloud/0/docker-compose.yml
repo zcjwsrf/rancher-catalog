@@ -1,0 +1,204 @@
+version: '2'
+services:
+  hc-cloud-gateway:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-gateway:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    ports:
+    - 18081:8081/tcp
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hc-cloud-gateway
+      traefik.port: '8081'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  hc-cloud-open:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-open:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  zipkin:
+    image: openzipkin/zipkin
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-ops-admin:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-ops-admin:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-stat:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-stat:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-oss:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-oss:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-ucenter:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-ucenter:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  redis:
+    image: redis:5.0.5-alpine3.10
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-registry:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-registry:1.0.0
+    environment:
+      eureka_host: 10.8.3.166
+      redis_host: redis
+    stdin_open: true
+    tty: true
+    links:
+    - redis:redis
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-video:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-video:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-msg:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-msg:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-im:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-im:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+      DB_SVR: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    stdin_open: true
+    tty: true
+    links:
+    - hc-cloud-registry:hc-cloud-registry
+    - redis:redis
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
+  hc-cloud-auth:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-auth:1.0.0
+    environment:
+      eureka_host: hc-cloud-registry
+      REDIS_SVR: redis
+    stdin_open: true
+    tty: true
+    links:
+    - redis:redis
+    - hc-cloud-registry:hc-cloud-registry
+    - zipkin:zipkin
+    labels:
+      io.rancher.container.pull_image: always
