@@ -18,9 +18,6 @@ services:
     ports:
     - 18081:8081/tcp
     labels:
-      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/hc-cloud-gateway
-      traefik.port: '8081'
-      traefik.enable: 'true'
       io.rancher.container.pull_image: always
   hc-cloud-open:
     image: registry.cn-hangzhou.aliyuncs.com/jk/hc-cloud-open:1.0.0
