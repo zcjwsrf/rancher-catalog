@@ -1,0 +1,107 @@
+.catalog:
+    name: "hc"
+    version: "3.3.05"
+    description: "智慧健康通核心业务服务"    
+    
+    questions:            
+      - variable: "DB_SVR"
+        label: "数据库IP"
+        description: "MySQL数据库服务器访问IP" 
+        required: true
+        type: "string"
+        default: "10.8.3.53"
+      - variable: "DB_PORT"
+        label: "数据库端口"
+        description: "MySQL数据库服务器的访问端口"        
+        required: true
+        type: "string"
+        default: "3306"
+      - variable: "DB_NAME"
+        label: "数据库名"
+        description: "MySQL数据库服务器中健康城市系统的库名"        
+        required: true
+        type: "string"  
+        default: "hcn"
+      - variable: "DB_USER"
+        label: "数据库用户"
+        description: "MySQL数据库登录用户名称"        
+        required: true
+        type: "string" 
+        default: "root"
+      - variable: "DB_PASS"
+        label: "数据库登录密码"
+        description: "MySQL数据库登录密码，需要填写加密后字符串，默认密码为atagbsoft"
+        required: true
+        type: "string"
+        default: "faBASL7ZRNjSbC5lc0uryWqtADCZuetdIXiddjw8e1Z1lNcnIjTSdPWpWSlgt+xwSE0nzfKTWqm0Yi09IdwmXw=="
+      - variable: "SITE_HOST"
+        description: "外网访问IP地址或域名，{ip|domain}:{port}，多个逗号隔开如:127.0.0.1,atag.bsoft.com.cn"
+        label: "外网地址"
+        required: true
+        type: "string"
+        default: ""
+hc-health:
+  scale: 1
+  start_on_create: true
+common-editor:
+  scale: 1
+  start_on_create: true
+common-clinical:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+hcn-registration:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+hc-admin-dist:
+  scale: 1
+  start_on_create: true
+hc-wxmp-dist:
+  scale: 1
+  start_on_create: true
+hcn-adapter:
+  scale: 1
+  start_on_create: true
+hcn-interface:
+  scale: 1
+  start_on_create: true
+hcn-mpi:
+  scale: 1
+  start_on_create: true
+hcn-web-slave:
+  scale: 1
+  start_on_create: true
+hcn-pay:
+  scale: 1
+  start_on_create: true
+common-proxy:
+  scale: 1
+  start_on_create: true
+fds:
+  scale: 1
+  start_on_create: true
+common-web-dist:
+  scale: 1
+  start_on_create: true
+pcn-online-consult:
+  scale: 1
+  start_on_create: true
+hc-health-record:
+  scale: 1
+  start_on_create: true
+hc-interface-demo:
+  scale: 1
+  start_on_create: true
+common-mobile-dist:
+  scale: 1
+  start_on_create: true
+pcn-core:
+  scale: 1
+  start_on_create: true
+pcn-archive-visit:
+  scale: 1
+  start_on_create: true
+hcn-web-master:
+  scale: 1
+  start_on_create: true

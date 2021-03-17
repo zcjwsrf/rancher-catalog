@@ -1,0 +1,23 @@
+.catalog:
+  name: "hc"
+  version: "3.3.05.1000"
+  description: "互联网医院业务服务"
+  
+proxy:
+  scale: 1
+  start_on_create: true
+file:
+  scale: 1
+  start_on_create: true
+web:
+  scale: 1
+  start_on_create: true
+base-service:
+  scale: 1
+  start_on_create: true
+alilife:
+  scale: 1
+  start_on_create: true
+wechatclient:
+  scale: 1
+  start_on_create: true
