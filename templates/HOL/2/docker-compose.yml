@@ -3,10 +3,10 @@ volumes:
   web-logs:
     external: true
     driver: rancher-nfs
-  base-service-logs:
+  alilife-logs:
     external: true
     driver: rancher-nfs
-  alilife-logs:
+  base-service-logs:
     external: true
     driver: rancher-nfs
   wechatclient-logs:
@@ -47,7 +47,7 @@ volumes:
     driver: rancher-nfs
 services:
   proxy:
-    image: registry.docker.hc:5000/hc-proxy:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-proxy:3.4.01.1000-SNAPSHOT
     environment:
       his_client_url_01: http://10.8.3.125:8300/framework
       queues_service_url: http://10.8.3.125:8300/framework
@@ -66,33 +66,34 @@ services:
     ports:
     - 8090:8090/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/proxy/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/proxy/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   file:
-    image: registry.docker.hc:5000/hc-file:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-file:3.4.01.1000-SNAPSHOT
     stdin_open: true
     volumes:
-    - file-storage:/usr/local/tomcat/webapps/file/upload
     - /etc/localtime:/etc/localtime
     - /etc/timezone:/etc/timezone
+    - file-storage:/usr/local/tomcat/webapps/file/upload
     tty: true
     ports:
     - 9000:8080/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/file/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/file/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   web:
-    image: registry.docker.hc:5000/hc-web:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-web:3.4.01.1000-SNAPSHOT
     environment:
-      common_clinical_url: https://xxxxxx.com.cn/common-clinical/
+      common_clinical_url: https://hol.bsoft.com.cn/common-clinical/
       hessian_proxy_url: http://proxy:8090/
       hessian_sys_url: http://base-service:8080/base-service/
-      image_url: https://xxxxxx.com.cn/file-zk/
+      image_url: https://hol.bsoft.com.cn/file-zk/
       regular_replace_pwd: '90'
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8099
     stdin_open: true
     volumes:
     - web-logs:/usr/local/tomcat/logs
@@ -100,23 +101,24 @@ services:
     - /etc/timezone:/etc/timezone
     tty: true
     links:
-    - base-service:base-service
     - proxy:proxy
+    - base-service:base-service
     ports:
     - 8096:8080/tcp
+    - 8099:8099/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/web/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/web/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   base-service:
-    image: registry.docker.hc:5000/hc-base-service:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-base-service:3.4.01.1000-SNAPSHOT
     environment:
       DB_NAME: nethospital_template
-      DB_PASS: 1RlQtAX3I5GbI08MTb6rN30lJyqg+sUelxvAyBUte6hguEIRoaOHObBPJijSllszH4lhjp5CMeb/IVUKOpkmZQ==
+      DB_PASS: XDUrYGnpr0yJQYlxMWCoM8jTEYMKD0FkJjV+buKf+LEiuIN2hzz2tKKFfd1feE//M9OHHgMuHWzH5JnwaYS9Kg==
       DB_PORT: '3306'
-      DB_PUBLIC_KEY: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAN8MVML+2u6bBOV/lKrnVUYNHRaYf7C9wOYBhtNQkxVa8wXNGO+YfCeJSK+umeMTPjZowFzr+veng02+3TnZYv8CAwEAAQ==
-      DB_SVR: 10.8.3.66
+      DB_PUBLIC_KEY: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKdmwTFYMAkw1IM8tutmrOxlSuxqOLWTfKd8OT9j3h5CV4dRGcFKxhBpDBuZnjjH5IybsmvORkOyPmNvKtFm5kMCAwEAAQ==
+      DB_SVR: 10.8.3.166
       DB_USER: root
       TplCode_kinds_1: ywyyhlw.yzm
       TplCode_kinds_2: ywyyhlw.yzm
@@ -146,13 +148,13 @@ services:
       hzAK: AAAAAAAA
       hzOrgId: sx0001
       hzPublicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDmIO0QZN1Dvh4yYXjQV/qmY0Tu6+NI7a/+tFZac6avSILOt/pCRVXWSl4Jnwr0jtaiEGFQKQ5cvxnFF5ELOx2eSwfC5/pACEux68fmb3bJPS3VNxqbQyGnGzLQ36/3UpX0gtNnwhOgashRK/5RQRiOiJXdSRJ9KhxQ3bP5x70dpQIDAQAB
-      image_url: https://xxxxxx.com.cn/file-zk/
-      jpush_doc_appkey: 5b1533caa120f941d68e1666
-      jpush_doc_master_secret: 54fbc4df53f5a48510d0e9b0
-      jpush_pub_appkey: cfadf50eb56431ee70b8baef
-      jpush_pub_master_secret: 20d604c4430658a14a2af4d6
-      mini_app_id: wx0c9a13690ee71490
-      mini_app_secret: 85f32cfe14e6f29fd4fbae2982408c00
+      image_url: https://hol.bsoft.com.cn/file-zk/
+      jpush_doc_appkey: b308cd52d68269f6e879cbf6
+      jpush_doc_master_secret: b0e8c6dd54dfdfa681c7a18e
+      jpush_pub_appkey: 9c0a8632e33021057f05c771
+      jpush_pub_master_secret: a55281bceaf2cff03b3cb416
+      mini_app_id: wx444b0b4ac03ea9bb
+      mini_app_secret: 53512dd09377eb3a9514431de187deae
       miniprogramState: trial
       physical_examination_private_key: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAyLjYI3IiLft/vE8gNktXxo3sJxc1UbdeDohqGqWQMtS/XSBwULx5p0haLQOrAMm/gqZRpc52FL7Mh9HqDCxDtwIDAQABAkBaRVdfSZs5ltwxslxITsYhE/7a7cMbBx6T5qHhbghV8y/moQ3mKCoc+ilS4w1RF+szge636wFvFpsFNw513G2BAiEA8qwRwbKbiThZkfhV3WJfDbpUHz8GmJS5LJTyIVIpoNcCIQDTvvaivhvLgnAx+FzZ9+/7QB7ly6zgPnH34i4Cdey4IQIhANzH8evBPMKuMsecITqmagaKVEiNRcoB3SsTY+su3lLHAiAaBMwfoUafEi8hJMicDAhUEkP5rrZWc7XjZMqMiNsGoQIhANVNS6Zo4EiAd6enBmGhdar6EM5rnWLNhGMwYEcif7de
       physical_examination_public_key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMi42CNyIi37f7xPIDZLV8aN7CcXNVG3Xg6IahqlkDLUv10gcFC8eadIWi0DqwDJv4KmUaXOdhS+zIfR6gwsQ7cCAwEAAQ==
@@ -181,12 +183,17 @@ services:
       timeout_operation: '600'
       universalLink: '{"pub":"https://atagmp.bsoft.com.cn/app/hlwyy/pub/","doc":"https://atagmp.bsoft.com.cn/app/hlwyy/pub/","man":"","spe":""}'
       url: https://gateway.atag.bshcn.com.cn/
-      verification_minute: '3'
+      verification_minute: '5'
       visitDomainName: http://cs77-3.gdpcloud.com/
       wechat_name: Bsoft互联网健康云平台
-      wechat_server_url: https://xxxxxx.com.cn/wechatclient-zk/
+      wechat_server_url: https://hol.bsoft.com.cn/bs-nethospital-wechat-alipay-zk/
       zhumu_password: chinaHANGZHOU
       zhumu_username: bsoft2019
+      JAVA_OPTS: -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8095
+      get_wechat_access_token_type: '2'
+      wechat_access_token_third_party_url: https://jkt.bsoft.com.cn/tokenmanage/weixin/v1.0/getAccessToken
+      wechat_access_token_third_party_user_id: '303'
+      wechat_access_token_third_party_password: bsoft20210207170145
     stdin_open: true
     volumes:
     - base-service-logs:/usr/local/tomcat/logs
@@ -198,21 +205,26 @@ services:
     ports:
     - 8095:8080/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/base-service/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/base-service/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   alilife:
-    image: registry.docker.hc:5000/hc-alilife:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-alilife:3.4.01.1000-SNAPSHOT
     environment:
       alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuWFqfO5B+zmC1IaMBDHmZ5SsWL9Txw/fiT98jdKjRimrFlj6bFIQWLdNszebQ0rrlkaZfL/feqiveuwJHYcQ/6GBZ82+UVh5IQ5AlJdBAJ4Jes/UEqCfT4OFsqEx/MZmKZXrD6N/zRKxCCQakHd+8kb9zYyi6kHj6gdnKaOqg4PnSCcEe8pP7C24P6bkgqLosPIZFB7qa35YRkq7q4z3Iv79IcKGXiwc7xqbc5ngNQjThbnKfqBLbj1MF00CqUx1/4OrI0bs0bNP/Ss4eDUO//aM8siBEibcDw7pv8BKa+zzXNeCLhhTT8FZlnNL7ufU4riTeOQxABcT0GQMqzJ3nQIDAQAB
       app_id: '2018062960428449'
       captchaCountMax: '20'
       hessian_proxy_url: http://proxy:8090/
       hessian_sys_url: http://base-service:8080/base-service/
-      image_url: https://xxxxxx.com.cn/file-zk/
+      image_url: https://hol.bsoft.com.cn/file-zk/
       private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDeaGO0C+M4wBngW8aCzQp1Sdknbq18YYsqVaHme2ZYTitj6C4SaCZhr4yIuk2dXkEWSddgye6uAhT5Ln86bOM80H2YjZNoFYLVDgyqspyIH+7qSw4lJKhPj0NJfgYC4tKo4gDzF2n9APHoAfwEkc4qvYGjXghie/HlwL+bijb863c3CB+bAFTIQut8v5WyShN+vF0laCNNB/pck1hY/mvccAbBJeqsBaH8tGwziO/hX7BXB+xIrBrLiNtAaeFB4wjd5oaQ2f3q7C6qN6TSZSqpSfrhZFUZv9ZkJtaeka0TuT7YGIm2ActAUWZ60iinwZjucgSV/K2ceQ8CRiKX5vGNAgMBAAECggEAT6Q578NB/pRrr7etgjFCSXXEWSZ84UlcuDAp5YrSv1RenUwLE3RQKjLetCdim7OgwwZ2Jaap3Y3JTOGllZpgVOqjzvkDjAYH75s0VfvXqbclqqhtzEcwLi0y/yItrOLkZK1pgaMkxQCNn3L2d/xuQ0fRIFsPzZRsrsUy19PKlQ5hoeSFa5nimr7zpPsr4u/x6RWv9pFxZGqUeVnWYlTL17fWrh1VlNN0JRv++kCeZdagh5Qa4WtcKz3RND3HqjL3WgEpR4aNi4mCiyOcrF8GihiHg4H9deqi4PFCgAFUw5QPqJ5+djhCEp2Zc56QJv6dy9g5VdiINxwZyVpYSt3R0QKBgQDvHZY5R71h6BxnBR1tZUNaav6i6+JPKUw6qaikHORM2PFNyq2HaVdYBDcd0IeUaj/2f4JJPn/+qcw7/Nt7Vr13Vfq9Be/yiQUM/BcLyJfR2ByA609tDCQ/HQJis7sxR6jd33ytlTImXDuKNqGlkVXfAzXsICH5IpZ1bhjzfOhIrwKBgQDuHMf/Mfn4BHsCnRWPQPwyrGukAyO9eSs5Q36J3UtnWl+hB7SbFplr3jhoR96S8Nnt9dc0lfNpgonqKSs4JZZjh72sj+8YJPTlrTAAq0A0BYE8ZLiF4MBHQgkk4fA4HG24UZk1TtvbwEP7Dv/oChX6HwGR08cXRGL2Be247oJAgwKBgDOjVxLNrFddcezJjP5X9QCsxIrYmAnyaDTu+K1gU+lInGvpTipFFIi8eE6m/vCNNXz9Mlyw86FCeAmoZJmxNL91wO1bP+NHteCE/FEeI7M8kYNBzehFy/oZQK+iEtXknNI1dk5iPu9L0cvaWnRP+5RqtBVnJw8PaiC4AwlqOxufAoGADTe/ymTF0YS+J1j892TOGyoDF6ms9DmjspwSjCiipOwZXuEEn49TmO9PBkrnChUgo9r/xUWFq5e5fCwo4AcGICRK3SdoSFjU12MTxRW8jKa5k9arf5MIWWxLAachJJw/Yvn0nUbxYXN80pT0k7brnWTXO3ccGCiNrcaKebeTt20CgYEAgZmRpXP5Ze5tK0+TcVTQh6hYCzLGMJiT/dENvTDKJEJIbKvwc+o1DIFnBiGXYWo+FMOFhJkXElUHA+2BfNMTh3MjNfpJwyF5QEzkP2Jgr1gJGg5PGfaFZvUVos1lAiCdEQvLDu1weGBlX8WDlzo0C9M2FCMotuNxlF2+xtzzv4k=
       public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3mhjtAvjOMAZ4FvGgs0KdUnZJ26tfGGLKlWh5ntmWE4rY+guEmgmYa+MiLpNnV5BFknXYMnurgIU+S5/OmzjPNB9mI2TaBWC1Q4MqrKciB/u6ksOJSSoT49DSX4GAuLSqOIA8xdp/QDx6AH8BJHOKr2Bo14IYnvx5cC/m4o2/Ot3NwgfmwBUyELrfL+VskoTfrxdJWgjTQf6XJNYWP5r3HAGwSXqrAWh/LRsM4jv4V+wVwfsSKway4jbQGnhQeMI3eaGkNn96uwuqjek0mUqqUn64WRVGb/WZCbWnpGtE7k+2BiJtgHLQFFmetIop8GY7nIElfytnHkPAkYil+bxjQIDAQAB
+      alipay_mini_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgws08jiOXNAGGy2DBbKBTL2Fa4YFjPyic5VMh/1DOAOpsl9t/ddr6CfNV+OdNbS8ann0XkxL3mAV5qbmVX08t3YthNk4GFoH+AP7fmBZ74/uX4wY2GFF74hRCnfh0nH6TCbNXgKNPhHrs9poJCfHVJrwWKFxb3NDYQnNTDZf3ybov1VTTgEO/LL4YAFpkm6KIMzS+aTXT4d+EZlzu49zTjasUmAPWm9nO1vfdfwITmYbLJMN3HB3LBqkttglb1pqHl56MgYXRTvtY/ijKWxQ1KOJW9o/yt00WiS8hUU/r9YTwIWk+IFIa0oiO7aEalMivIhSBsZo2XHjsR/wi1YJcQIDAQAB
+      alipay_mini_merchant_private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCljQDb1cEhll5WaIvlQtOjx0sgtWoiSGJ3uT5Ijjgnh0tGnl8ZkwSo/7JjPS+1yUm38S9fyRbSuKwSTD9teVnEw0Fvm4lW9lUCtWjPiJO3uwOHYTY25I/gh48dS8MbOwBDebVtYc5z6t2Am/JPJ9NWZnDgLoDIuGf3sm7x29j/bDPVMnmENi+T+yucC4Wok0kXzdeuz7XCmbDHMQCMZH4yn1RcBE8ou3CWPJxV3MXUECb0FOrS5B0R9qWSUGqRGfzv4ALnyyYOe6HciluMZERAnk3+/Fz/c45JZQH1NNQpigjMd1/pG9q7PFhmQHSUJ+QPWBtKElQjkb4NZm0+OYq/AgMBAAECggEAJm/Gc0P9wz6WSJmdYW1SlgP/fWiha7RCqGlp/I6ImyTeZVb/3YA05Mf5MvFR0nMZmot05Fhb5DDcQqNRVqmGHhj3aGJEUNyAgFB+NTEQmufgud3oKHaIsSjIIZUlh3z7Yq8vYGYE+QTeyK1sZNRqTPUb3/DsFa469VeISr8wcpzdCNZgTADcK9uZ6WRR0wzNxuX9QBX/gByj6tsXFwocZ0+WbK5XC9huBqDtJtTCICJE2q3E/w56LMvFCQSW78XSnUbbqGo1QCr3NKQ+IHPYMZR4t6HNmsgiIRSrm917WhXbxC2h0x9h5jv4jpQ8WXPxJQhaYJySlsAD6VrNoYR1gQKBgQDUDhZMoq4Frnj0t3bh098ZE5fi7jnyHsFiL51iZSFwjljeaTj0Vn+o6+LsU0fzrN0KA2RF+4wB6plHhGEytQ674xNTHJbk8nnO76rRd46k9/A5mlPOncwbFVA4pfoRPQ+XvqjTEMqA36Nz270YCrQ2u6thhARr/8QBA1+ZQdh59QKBgQDH28fD21IwJKM6TvDIlgFuaARa8UD56eY8swz9aTF/fDu7MW9/h2hMqUqMnZpSvmki6eqGeeBuJNeMizcXwKQdMg7B13z5mXI4r5MK8c56UEX/uykkG9ZXUmKjWDqj1uw17rEbgM+ES53CLSh14TP4R6uoqfEMsZ+HCyADscc9YwKBgQCOJGs6L4nq8QrPLvOXaMgRLRsQ2JMrAwap5DThMdz6b9CONYYh8qFb/9J6i1CdvG/mOGPMrVMqLbFVSR1GOiuIMixP98gF66tO1URxaGzLlA8I7bPjuc6JEP5XGprHV2DOXNUZthWn0UDldpQIO5SVY7L7iNzV7/nYnARG3OZYyQKBgCkd+0Q9G/SRpQ867GioC9VWCwdWuQJxb4+vWo3MFYXf3j4N1p2LExcqgQ7a4cQCLokjTL+r1VNzuvDMN2JonJrxEH4qwihrvEcTQBIxW0RovW32aGloXLmMVoS6gx3v+prB56f74TWbhPJM7hUKZvG+dP93LwNoi6Rx0n1QFuh3AoGAKu7/HxgfVCf/RHnt6epVYOkLJgeJwRtEDiH4+LyE5Rtv5+KYXcDWXP2gZKBjMSO5Nn7lHuZmeHLNsAlkQqa7WOgRFLvE2yXdhElEs+svIx9wMdJr0M/hK20C29+gobJ2YYDfPe3/qADmFaqg86qaQXkG3s8DSranxbIIL3I3Tfo=
+      alipay_mini_app_id: 2021002129615920
+      sys_service_provider_id: 2088121633623155
+      sign_type: RSA2
     stdin_open: true
     volumes:
     - alilife-logs:/usr/local/tomcat/logs
@@ -225,12 +237,12 @@ services:
     ports:
     - 8083:8080/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/alilife/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/alilife/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
   wechatclient:
-    image: registry.docker.hc:5000/hc-wechatclient:3.3.04.1000-SNAPSHOT
+    image: registry.docker.hc:5000/hc-wechatclient:3.4.01.1000-SNAPSHOT
     environment:
       app_id: wxc05533898d6fd716
       app_secret: 37618e5603fd1fc158786e8ba5fe5b78
@@ -238,9 +250,9 @@ services:
       hessian_proxy_url: http://proxy:8090/
       hessian_sys_url: http://base-service:8080/base-service/
       hos_name: 创业慧康互联网医院
-      image_url: https://xxxxxx.com.cn/file-zk/
-      mini_app_id: wx0c9a13690ee71490
-      mini_app_secret: 85f32cfe14e6f29fd4fbae2982408c00
+      image_url: https://hol.bsoft.com.cn/file-zk/
+      mini_app_id: wxa2c684982085a3ca
+      mini_app_secret: a9999293bcd25e563552befe212c61dd
     stdin_open: true
     volumes:
     - wechatclient-logs:/usr/local/tomcat/logs
@@ -248,12 +260,12 @@ services:
     - /etc/timezone:/etc/timezone
     tty: true
     links:
-    - base-service:base-service
     - proxy:proxy
+    - base-service:base-service
     ports:
     - 8882:8080/tcp
     labels:
-      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.66;PathPrefix:/wechatclient/
+      traefik.frontend.rule: Host:hol.bsoft.com.cn,10.8.3.166;PathPrefix:/wechatclient/
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
@@ -384,3 +396,4 @@ services:
       traefik.port: '8080'
       traefik.enable: 'true'
       io.rancher.container.pull_image: always
+

@@ -21,3 +21,29 @@ alilife:
 wechatclient:
   scale: 1
   start_on_create: true
+bs-nethospital-wechat-alipay-dist:
+  scale: 1
+  start_on_create: true
+bs-nethospital-web-dist:
+  scale: 1
+  start_on_create: true
+bs-nethospital-base-service-dist:
+  scale: 1
+  start_on_create: true
+bs-nethospital-base-service-doctor-dist:
+  scale: 1
+  start_on_create: true
+common-editor-hlw:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+common-mobile-hlw:
+  scale: 1
+  start_on_create: true
+common-clinicalhlw:
+  retain_ip: true
+  scale: 1
+  start_on_create: true
+common-web-hlw:
+  scale: 1
+  start_on_create: true
