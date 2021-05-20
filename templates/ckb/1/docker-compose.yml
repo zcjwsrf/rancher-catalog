@@ -1,0 +1,42 @@
+version: '2'
+services:
+  bs-ckb:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/bs-ckb:3.4.01
+    environment:
+      LOCALHOST_PORT: localhost
+      LOCALHOST_IP: '8080'
+      RPC_LUCENE_DISK: /usr/local/ckb/luceneindex
+      DIS_COMPATH: /usr/local/ckb/common_desease
+      ZOOKEEPER_SERVER: zookeeper:2181
+      RPC_SERVER: 0.0.0.0:49005
+      RPC_HCN_DISEASELIBRARY_SERVER: 0.0.0.0:37303
+      JAVA_OPTS: -Dfile.encoding=UTF-8
+    stdin_open: true
+    volumes:
+    - /etc/timezone:/etc/timezone
+    - /etc/localtime:/etc/localtime
+    tty: true
+    external_links:
+    - zookeeper/zookeeper:zookeeper
+    ports:
+    - 49005:49005/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  bs-ckbserver:
+    image: registry.cn-hangzhou.aliyuncs.com/jk/bs-ckbserver:latest
+    environment:
+      HCN_WEB_URL: ${HCN_WEB_URL}
+      USERNAME: ${USERNAME}
+      PASSWORD: ${PASSWORD}
+      TENANT: ${TENANT}
+      JAVA_OPTS: -Dfile.encoding=UTF-8
+    stdin_open: true
+    volumes:
+    - /etc/timezone:/etc/timezone
+    - /etc/localtime:/etc/localtime
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:${SITE_HOST};PathPrefix:/ckbserver
+      traefik.port: '8080'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always

@@ -1,0 +1,41 @@
+.catalog:
+    name: "bs-ckb"
+    version: "3.4.01"
+    description: "ckb服务"       
+    questions:
+      - variable: "SITE_HOST"
+        description: "外网访问IP地址或域名，{ip|domain}:{port}，多个逗号隔开如:127.0.0.1,atag.bsoft.com.cn"
+        label: "外网地址"
+        required: true
+        type: "string"
+        default: ""
+      - variable: "HCN_WEB_URL"
+        description: "hcn-web的访问地址,如http://atag.bsoft.com.cn/hcn-web/"
+        label: "hcn-web地址"
+        required: true
+        type: "string"
+        default: ""
+      - variable: "USERNAME"
+        description: "请提供一个居民端账号，用于获取token"
+        label: "居民端账号"
+        required: true
+        type: "string"
+        default: ""
+      - variable: "PASSWORD"
+        description: "居民端账号的密码"
+        label: "密码"
+        required: true
+        type: "string"
+        default: ""
+      - variable: "TENANT"
+        description: "本项目的租户，如hcn.dongtai"
+        label: "租户"
+        required: true
+        type: "string"
+        default: ""
+bs-ckb:
+  scale: 1
+  start_on_create: true
+bs-ckbserver:
+  scale: 1
+  start_on_create: true
